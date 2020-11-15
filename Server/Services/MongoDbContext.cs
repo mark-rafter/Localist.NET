@@ -47,6 +47,11 @@ namespace Localist.Server.Services
 
             // todo: move to IHostedService https://kevsoft.net/2020/03/06/creating-mongodb-indexes-in-asp-net-core-3-1.html
             CreateIndexes();
+
+            if (dbOptions.SeedInviteCode is not null)
+            {
+                SeedInvite(dbOptions.SeedInviteCode);
+            }
         }
 
         public static void RegisterEntityMaps()
@@ -125,6 +130,12 @@ namespace Localist.Server.Services
             // Profiles.Indexes.CreateOne(new CreateIndexModel<Profile>(
             //     Builders<Profile>.IndexKeys
             //         .Descending(x => x.WatchIds)));
+        }
+
+        void SeedInvite(string inviteCode)
+        {
+            if (!Invites.Find(i => i.Code == inviteCode).Any())
+                Invites.InsertOne(new Invite(inviteCode, null));
         }
 
         static void TryRegisterClassMap<TClass>(Action<BsonClassMap<TClass>> classMapInitializer)
