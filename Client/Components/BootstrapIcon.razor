@@ -1,0 +1,19 @@
+@*
+    // workaround because blazor has dodgy support for binding to svg/use tags (as of 5-rc2)
+    https://docs.microsoft.com/en-us/aspnet/core/blazor/components/?view=aspnetcore-5.0#scalable-vector-graphics-svg-images
+*@
+
+@RenderSvg()
+
+@code {
+    [Parameter]
+    public string Name { get; init; } = default!;
+
+    [Parameter]
+    public string Size { get; init; } = "1rem";
+
+    MarkupString RenderSvg() => (MarkupString)(
+        $"<svg class=\"bi\" width=\"{Size}\" height=\"{Size}\" fill=\"currentColor\">"
+        + $"<use xlink:href=\"svg/bootstrap-icons.min.svg#{Name}\" />"
+        + "</svg>");
+}

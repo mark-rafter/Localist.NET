@@ -1,0 +1,50 @@
+﻿@inherits PostReplyCardBase
+
+@{
+    var headerId = $"{CardId}-heading";
+    var collapseId = $"{CardId}-collapse";
+}
+
+<div id="@CardId" class="card mt-2 bl-secondary">
+    <div class="card-header p-0" id="@headerId">
+        <h3 class="mb-0">
+            <button class="btn btn-sm btn-block text-left text-muted px-2" type="button" data-toggle="collapse"
+            data-target="#@collapseId" aria-expanded="true" aria-controls="@collapseId">
+                <RelativeTime InputDate="@PostReply.CreatedOn" />
+                <text> by @(PostReply.Author?.Username ?? "anonymous")</text>
+                <div class="float-right">
+                    <BootstrapIcon Name="chevron-expand" Size="1rem" />
+                </div>
+            </button>
+        </h3>
+    </div>
+    <div id="@collapseId" class="collapse show" aria-labelledby="@headerId">
+        <div class="card-body">
+            @PostReply.Message
+        </div>
+        <div class="card-footer px-2">
+            <div class="d-flex">
+                <div class="flex-grow-1">
+                    <RippleButton class="btn btn-sm btn-reply" @onclick="() => ToggleReplyForm()">
+                        <BootstrapIcon Name="reply" Size="1rem" />
+                        <small>Reply</small>
+                    </RippleButton>
+                </div>
+                <div>
+                    @* todo: bookmark replies *@
+                </div>
+            </div>
+            @if (ShowReplyForm)
+            {
+                <NewPostReply PostId="@PostReply.PostId" PostReplyId="@PostReply.Id" OnSubmitCallback="AppendReply" />
+            }
+            <section id="@($"{CardId}-replies")">
+                @foreach (var childTree in PostReplyTree.Children)
+                {
+                    // todo: perf test @key="childTree.Item.Id"
+                    <PostReplyCard PostReplyTree="@childTree" />
+                }
+            </section>
+        </div>
+    </div>
+</div>

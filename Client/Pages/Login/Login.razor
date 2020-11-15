@@ -1,0 +1,38 @@
+@layout Localist.Client.Shared.LoginLayout
+@page "/login"
+
+@inherits LoginBase
+
+@if (!IsSubmitting && Error is not null)
+{
+        <div class="alert alert-danger" role="alert">
+            @Error
+        </div>
+}
+
+<EditForm Model="@LoginModel" OnValidSubmit="@(HandleValidSubmitAsync)">
+    <DataAnnotationsValidator />
+
+    <div class="form-label-group">
+        <InputText id="username" class="form-control" placeholder="Username" onfocus="this.scrollIntoView()"
+            @bind-Value="LoginModel.Username"
+        autofocus />
+        <label for="username">Username</label>
+    </div>
+
+    <div class="form-label-group">
+        <InputText id="password" class="form-control" type="password" placeholder="Password"
+            onfocus="this.scrollIntoView()" @bind-Value="LoginModel.Password" />
+        <label for="password">Password</label>
+    </div>
+
+    <div class="form-check form-switch mb-4">
+        <InputCheckbox class="form-check-input" id="rememberMe" @bind-Value="LoginModel.RememberMe" />
+        <label class="form-check-label" for="rememberMe">Remember me (30 days)</label>
+        @* todo: get duration from config *@
+    </div>
+
+    <RippleButton type="submit" class="btn btn-primary" disabled="@IsSubmitting">
+        Sign in
+    </RippleButton>
+</EditForm>

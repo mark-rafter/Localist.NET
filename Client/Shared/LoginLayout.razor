@@ -1,0 +1,21 @@
+﻿@layout MainLayout
+@inherits LayoutComponentBase
+
+<div class="mx-auto mt-3 py-3 px-2" style="max-width: 20rem;">
+    <section class="text-center">
+        <img src="login-logo.png" class="mx-auto img-fluid">
+        <h2 class="my-2">Sign In</h2>
+    </section>
+
+    <nav class="mb-3">
+        <div class="nav nav-tabs" role="tablist">
+            <NavLink class="nav-link" href="/login" role="tab">Sign in</NavLink>
+            <NavLink class="nav-link" href="/register" role="tab">Register</NavLink>
+            <NavLink class="nav-link" href="/lost-code" role="tab">Lost code</NavLink>
+        </div>
+    </nav>
+
+    <section>
+        @Body
+    </section>
+</div>

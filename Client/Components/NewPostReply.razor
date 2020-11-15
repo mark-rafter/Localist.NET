@@ -1,0 +1,29 @@
+﻿@inherits NewPostReplyBase
+
+@{
+    var anonymousSwitchId = $"{SectionId}-anonymous";
+    var formId = $"{SectionId}-form";
+}
+
+<section id="@SectionId" class="p-2">
+    <EditForm Id="@formId" Model="@NewPostReplyModel" OnValidSubmit="@(HandleValidSubmitAsync)">
+        <DataAnnotationsValidator />
+
+        <ValidationMessage For="@(() => NewPostReplyModel.Message)" />
+        <div class="form-label-group">
+            <InputTextArea id="@MessageInputId" class="form-control" row="4" placeholder="Message" onfocus="this.scrollIntoView()"
+            @bind-Value="NewPostReplyModel.Message" />
+            <label for="@MessageInputId">Message</label>
+        </div>
+
+        <div class="form-check form-switch mb-3">
+            <InputCheckbox class="form-check-input" id="@anonymousSwitchId"
+            @bind-Value="NewPostReplyModel.IsAnonymous" />
+            <label class="form-check-label" for="@anonymousSwitchId">Reply anonymously</label>
+        </div>
+
+        <RippleButton type="submit" class="btn btn-primary mb-2" disabled="@IsSubmitting">
+            Submit
+        </RippleButton>
+    </EditForm>
+</section>

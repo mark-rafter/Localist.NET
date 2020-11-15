@@ -1,0 +1,70 @@
+﻿@using Localist.Shared
+@using Localist.Shared.Helpers
+
+@inherits PostCardBase
+
+<div class="container card my-2 border rounded @GetLeftBorderStyle()">
+    <div class="row no-gutters align-items-center">
+        <div class="col-auto">
+            <a href="post/@Post.Id">
+                @if (Post.ThumbUrl is not null)
+                {
+                        <img src="@Post.ThumbUrl" class="img-fluid rounded" width="90" height="90" />
+                }
+                else
+                {
+                        <img src="@GetPlaceholderSvg()" height="90" />
+                }
+            </a>
+        </div>
+        <div class="col border-left pr-1">
+            <div class="card-body pt-2 p-0">
+                <h4 class="card-title">
+                    <a href="post/@Post.Id" class="mr-2">
+                        @Post.Title
+                        @if (Post.ExchangeDetails is not null)
+                        {
+                                <text> &ndash; @Post.ExchangeDetails.GetPrice()</text>
+                        }
+                    </a>
+                    @if (Post.ExchangeDetails is not null)
+                    {
+                        var badgeColour = ((int)Post.ExchangeDetails.Type % 2) == 0 ? "bg-info" : "bg-success";
+                            <span class="badge @badgeColour">@Post.ExchangeDetails?.Type</span>
+                    }
+                </h4>
+                <p class="card-text">
+                    <RelativeTime InputDate="@Post.CreatedOn" />
+                    @if (Post.Author is not null)
+                    {
+                        // todo: name custom glow, icon, etc.
+                            <text> by @Post.Author.Username</text>
+                    }
+                <p>
+                    <small class="text-muted">
+                        @RenderReplyCount()
+                    </small>
+                </p>
+                </p>
+            </div>
+        </div>
+        <div class="col-auto px-0" style="max-width: 3rem;">
+            @if (IsBookmarked is not null)
+            {
+                    <ToggleButton IsEnabled="@IsBookmarked" Icon="bookmark-check" Title="Bookmark" Size="1.5rem"
+                        Controller="Profile" PatchModel="@(new PatchProfileModel().WithBookmarkId(Post.Id!))" />
+            }
+
+            @if (IsWatched is not null)
+            {
+                    <ToggleButton IsEnabled="@IsWatched" Icon="bell" Title="Watch" Size="1.5rem"
+                        Controller="Profile" PatchModel="@(new PatchProfileModel().WithWatchId(Post.Id!))" />
+            }
+
+            @* Share button *@
+            @* <a type="button" class="btn btn-link btn-sm" aria-label="Bookmark" @onclick="() => GenerateShareLink()"> *@
+                @* <BootstrapIcon Name="share" Size="1.5rem" /> *@
+            @* </a> *@
+        </div>
+    </div>
+</div>

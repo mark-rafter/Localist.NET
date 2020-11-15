@@ -5,14 +5,19 @@ self.importScripts('./service-worker-assets.js');
 self.addEventListener('install', event => event.waitUntil(onInstall(event)));
 self.addEventListener('activate', event => event.waitUntil(onActivate(event)));
 self.addEventListener('fetch', event => event.respondWith(onFetch(event)));
+self.addEventListener('push', event => onPush(event));
+self.addEventListener('notificationclick', event => onNotificationclick(event));
 
 const cacheNamePrefix = 'offline-cache-';
 const cacheName = `${cacheNamePrefix}${self.assetsManifest.version}`;
-const offlineAssetsInclude = [ /\.dll$/, /\.pdb$/, /\.wasm/, /\.html/, /\.js$/, /\.json$/, /\.css$/, /\.woff$/, /\.png$/, /\.jpe?g$/, /\.gif$/, /\.ico$/, /\.blat$/, /\.dat$/ ];
-const offlineAssetsExclude = [ /^service-worker\.js$/ ];
+const offlineAssetsInclude = [/\.dll$/, /\.pdb$/, /\.wasm/, /\.html/, /\.js$/, /\.json$/, /\.css$/, /\.woff$/, /\.png$/, /\.jpe?g$/, /\.gif$/, /\.ico$/];
+const offlineAssetsExclude = [/^service-worker\.js$/];
 
 async function onInstall(event) {
-    console.info('Service worker: Install');
+    console.info(`Service worker: Install (cache - ${cacheName})`);
+
+    const bc = new BroadcastChannel('blazor-channel');
+    bc.postMessage('update-installing');
 
     // Fetch and cache all matching items from the assets manifest
     const assetsRequests = self.assetsManifest.assets
@@ -20,6 +25,14 @@ async function onInstall(event) {
         .filter(asset => !offlineAssetsExclude.some(pattern => pattern.test(asset.url)))
         .map(asset => new Request(asset.url, { integrity: asset.hash }));
     await caches.open(cacheName).then(cache => cache.addAll(assetsRequests));
+
+    bc.onmessage = function (message) {
+        if (message && message.data == 'update-restart') {
+            self.skipWaiting();
+            bc.postMessage('update-completed');
+        }
+    }
+    bc.postMessage('update-installed');
 }
 
 async function onActivate(event) {
@@ -45,4 +58,21 @@ async function onFetch(event) {
     }
 
     return cachedResponse || fetch(event.request);
+}
+
+function onPush(event) {
+    const payload = event.data.json();
+    event.waitUntil(
+        self.registration.showNotification('Localist', {
+            body: payload.message,
+            icon: 'ico/icon-512.png',
+            silent: true,
+            data: { url: payload.url }
+        })
+    );
+}
+
+function onNotificationclick(event) {
+    event.notification.close();
+    event.waitUntil(clients.openWindow(event.notification.data.url));
 }

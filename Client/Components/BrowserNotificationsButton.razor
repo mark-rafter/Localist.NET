@@ -1,0 +1,17 @@
+@inherits BrowserNotificationsButtondBase
+
+@if (!HideComponent)
+{
+    <div class="form-check form-switch mb-3">
+        <input id="enableNotifications" type="checkbox" class="form-check-input" 
+            checked="@IsSubscribed" disabled="@IsSubscribed"
+            @onchange="OnEnableNotificationsChange" />
+        <label class="form-check-label" for="enableNotifications">
+            Enable notifications in this browser
+        </label>
+        @if (BrowserNotificationMessage is not null)
+        {
+            <small class="text-danger"> (@BrowserNotificationMessage)</small>
+        }
+    </div>
+}

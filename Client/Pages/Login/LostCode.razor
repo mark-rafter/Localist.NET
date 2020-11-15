@@ -1,0 +1,26 @@
+@layout Localist.Client.Shared.LoginLayout
+@page "/lost-code"
+
+@inherits LostCodeBase
+
+@if (!IsSubmitting && Error is not null)
+{
+        <div class="alert alert-danger" role="alert">
+            @Error
+        </div>
+}
+
+<EditForm Model="@LostCodeModel" OnValidSubmit="@(HandleValidSubmitAsync)">
+    <DataAnnotationsValidator />
+
+    <div class="form-text mb-1">A new code will be posted through your letterbox.</div>
+    <div class="form-label-group">
+        <InputText id="address" class="form-control" onfocus="this.scrollIntoView()" placeholder="Address"
+            @bind-Value="LostCodeModel.Address" autofocus />
+        <label for="address">Address / Flat number</label>
+    </div>
+
+    <RippleButton type="submit" class="btn btn-primary" disabled="@IsSubmitting">
+        Submit
+    </RippleButton>
+</EditForm>

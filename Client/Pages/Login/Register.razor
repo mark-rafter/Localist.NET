@@ -1,0 +1,49 @@
+@layout Localist.Client.Shared.LoginLayout
+@page "/register"
+
+@inherits RegisterBase
+
+@if (!IsSubmitting && Error is not null)
+{
+        <div class="alert alert-danger" role="alert">
+            @Error
+        </div>
+}
+
+<EditForm Model="@RegisterModel" OnValidSubmit="@(HandleValidSubmitAsync)">
+    <DataAnnotationsValidator />
+
+    <ValidationMessage For="@(() => RegisterModel.InviteCode)" />
+    <div class="form-label-group">
+        <InputText id="invitecode" class="form-control" placeholder="Invite Code" onfocus="this.scrollIntoView()"
+            @bind-Value="RegisterModel.InviteCode"
+        autofocus />
+        <label for="invitecode">Invite Code</label>
+    </div>
+
+    <ValidationMessage For="@(() => RegisterModel.Username)" />
+    <div class="form-label-group">
+        <InputText id="username" class="form-control" placeholder="Username" onfocus="this.scrollIntoView()"
+            @bind-Value="RegisterModel.Username" />
+        <label for="username">Username</label>
+    </div>
+
+    <ValidationMessage For="@(() => RegisterModel.Password)" />
+    <div class="form-label-group">
+        <InputText id="password" class="form-control" type="password" onfocus="this.scrollIntoView()" placeholder="Password"
+        @bind-Value="RegisterModel.Password" />
+        <label for="password">Password</label>
+    </div>
+
+    <ValidationMessage For="@(() => RegisterModel.ConfirmPassword)" />
+    <div class="form-label-group">
+        <InputText id="confirmpassword" class="form-control" type="password" onfocus="this.scrollIntoView()"
+            placeholder="Confirm Password"
+        @bind-Value="RegisterModel.ConfirmPassword" />
+        <label for="confirmpassword">Confirm Password</label>
+    </div>
+
+    <RippleButton type="submit" class="btn btn-primary" disabled="@IsSubmitting">
+        Register
+    </RippleButton>
+</EditForm>

@@ -1,0 +1,107 @@
+@page "/post/{PostId}"
+
+@using Localist.Shared
+@using Localist.Shared.Helpers
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@inherits PostDetailBase
+
+@if (Error is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @Error
+    </div>
+}
+else if (PostDetail is not null)
+{
+    if (PostDetail.IsArchived)
+    {
+        <div class="alert alert-secondary" role="alert">
+            This post has been archived.
+        </div>
+    }
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">
+                @PostDetail.Title
+                @if (PostDetail.ExchangeDetails is not null)
+                {
+                    <text> &ndash; @PostDetail.ExchangeDetails.GetPrice()</text>
+                }
+            </h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+                <RelativeTime InputDate="@PostDetail.CreatedOn" />
+                @if (PostDetail.Author is not null)
+                {
+                    <text> by @PostDetail.Author.Username</text>
+                }
+            </h6>
+            <p class="card-text">@PostDetail.Description</p>
+            @if (PostDetail.ImageUploadApiData?.Any() == true)
+            {
+                <div class="row" id="gallery">
+                    @for (var i = 0; i < PostDetail.ImageUploadApiData.Count; i++)
+                    {
+                        var index = i; // for onclick callback
+
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <a class="btn">
+                                <img class="img-thumbnail" src="@PostDetail.ImageUploadApiData[index].Thumb.Url"
+                                     @onclick="@(() => ShowImageModal(index))">
+                            </a>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+        <div class="card-footer">
+            <div class="d-flex">
+                <div class="flex-grow-1">
+                    @if (!PostDetail.IsArchived)
+                    {
+                        <RippleButton type="button" class="btn btn-outline-primary btn-sm"
+                                    @onclick="() => ToggleReplyForm()">
+                            <BootstrapIcon Name="reply" Size="1.5rem" />
+                            <small>Reply</small>
+                        </RippleButton>
+                        <AuthorizeView>
+                            @if (PostDetail.Author?.UserId == context.User.GetUserId())
+                            {
+                                <RippleButton type="button" class="btn btn-outline-secondary btn-sm"
+                                    @onclick="() => ToggleIsArchived()">
+                                    <BootstrapIcon Name="archive" Size="1.5rem" />
+                                    <small>Archive</small>
+                                </RippleButton>
+                            }
+                        </AuthorizeView>
+                    }
+                </div>
+                <div>
+                    <ToggleButton IsEnabled="@PostDetail.IsBookmarked" Icon="bookmark-check" Title="Bookmark" Size="1.5rem"
+                        Controller="Profile" PatchModel="@(new PatchProfileModel().WithBookmarkId(PostId))" />
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (ShowReplyForm)
+    {
+        <NewPostReply PostId="@PostId" OnSubmitCallback="RefreshReplies" />
+    }
+
+    if (PostReplyTrees is not null)
+    {
+        <section id="post-replies" class="mt-2">
+            <Virtualize Items="@PostReplyTrees" Context="postReplyTree" OverscanCount="5">
+                <PostReplyCard PostReplyTree="@postReplyTree" />
+            </Virtualize>
+        </section>
+    }
+    else
+    {
+        <Loading Message="Loading replies..." />
+    }
+}
+else
+{
+    <Loading Message="Loading post..." />
+}

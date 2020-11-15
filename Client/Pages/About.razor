@@ -1,0 +1,72 @@
+﻿@page "/about"
+
+<div class="mx-auto my-2" style="max-width: 50rem;">
+    <h2>About @appName</h2>
+    <p>
+        @appName is a free-to-use message board for small communities, designed to encourage local economic activity and
+        reduce waste.
+    </p>
+
+    <h3>Features</h3>
+    <ul>
+        <li>Trade posting (buy/sell/borrow, lease/rent, hire/provide)</li>
+        <li>General posting</li>
+        @* todo: <li>Polls</li> *@
+        <li>App with push notifications</li>
+    </ul>
+
+    <h3>Philosophy</h3>
+    <ul>
+        <li>Enhance sense of local community</li>
+        <li>No ads, tracking, or collection of personal data</li>
+        <li>100% free and <a href="@repoAddress" target="_blank">open source</a></li>
+        <li>Optional anonymity</li>
+    </ul>
+
+    <h3>FAQs</h3>
+    <section class="faq">
+        <hr />
+        <article>
+            <blockquote>Q: How do I install the app on my phone?</blockquote>
+            <p>
+                A: @appName can be installed on any phone with a modern web browser
+                (<a href="https://www.mozilla.org/en-US/firefox/new/" target="_blank">Firefox</a>,
+                <a href="https://www.microsoft.com/en-us/edge" target="_blank">Edge</a>,
+                <a href="https://www.google.com/chrome/" target="_blank">Chrome</a>,
+                <a href="https://www.opera.com/" target="_blank">Opera</a>).
+                Look for <strong>Install</strong> or <strong>Add to home screen</strong> in your browser options menu.
+            </p>
+        </article>
+        <hr />
+        <article>
+            <blockquote>Q: How do I get an invite code?</blockquote>
+            <p>
+                A: <a href="/lost-code">Click Here</a> to notify your community and have an invite code posted through your
+                letterbox.
+            </p>
+        </article>
+        <hr />
+        <article>
+            <blockquote>Q: Why can't I archive my anonymous posts?</blockquote>
+            <p>
+                A: Anonymous posts have no trace back to the user who posted them, so it's not possible for the app to determine
+                who has archive permission.
+            </p>
+        </article>
+        <hr />
+    </section>
+
+    <h3>Terms of use</h3>
+    <ul>
+        <li>Do not harass or abuse others</li>
+        <li>Do not incriminate yourself or others</li>
+        <li>Do not spam (e.g. pyramid schemes, fake postings)</li>
+    </ul>
+</div>
+
+@code {
+    const string appName = "Localist";
+    const string repoAddress = "https://github.com/mark-rafter/localist";
+
+    protected override bool ShouldRender() => false;
+}

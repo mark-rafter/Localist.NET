@@ -1,0 +1,5 @@
+@inherits ToggleButtonBase
+
+<a type="button" class="btn btn-link btn-sm" title="@Title" aria-label="@Title" @onclick="() => Toggle()">
+    <BootstrapIcon Name="@(IsEnabled == true ? $"{@Icon}-fill" : @Icon)" Size="@Size" />
+</a>

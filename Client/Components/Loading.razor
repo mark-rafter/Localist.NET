@@ -1,0 +1,12 @@
+<div class="text-center mx-auto my-4">
+    <div class="spinner-border" role="status"></div>
+    <p>@Message</p>
+</div>
+
+@code {
+    [Parameter]
+    public string Message { get; init; } = "Loading...";
+
+    [Parameter]
+    public int LavaCount { get; init; } = 8;
+}

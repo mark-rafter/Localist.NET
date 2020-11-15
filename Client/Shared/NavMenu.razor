@@ -1,37 +1,80 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">Localist</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
-
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
-    </ul>
-</div>
+﻿<nav class="navbar navbar-expand navbar-dark bg-gradient fixed-bottom">
+    <div class="container justify-content-center text-center" style="max-height: inherit;">
+        <div class="navbar-nav" style="max-height: inherit;">
+            <AuthorizeView>
+                <Authorized>
+                    @for (var i = 0; i < NavLinksAuthorized.Length; i++)
+                    {
+                        if (i > 0)
+                        {
+                            <span class="mx-1 mx-sm-3 mx-lg-4"></span>
+                        }
+                        @DisplayNavLink(NavLinksAuthorized[i]);
+                    }
+                </Authorized>
+                <NotAuthorized>
+                    @for (var i = 0; i < NavLinksUnauthorized.Length; i++)
+                    {
+                        if (i > 0)
+                        {
+                            <span class="mx-1 mx-sm-3 mx-lg-4"></span>
+                        }
+                        @DisplayNavLink(NavLinksUnauthorized[i]);
+                    }
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+    </div>
+</nav>
 
 @code {
-    private bool collapseNavMenu = true;
+    const string rippleBtnClass = "btn btn-link py-0";
+    const string activeClass = "active";
+    const string navLinkClass = "nav-link stretched-link";
+    const string labelClass = "mb-0 mt-1 d-none d-lg-block";
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    static NavLinkItem LoginLink = new("Sign In", "/login", "key", Match: NavLinkMatch.All);
+    static NavLinkItem HomeLink = new("Home", "/", "house-door", Match: NavLinkMatch.All);
+    static NavLinkItem BookmarksLink = new("Bookmarks", "/bookmarks", "bookmark-check");
+    static NavLinkItem NewPostLink = new("New Post", "/newpost", "pencil-square");
+    static NavLinkItem SettingsLink = new("Settings", "/settings", "gear");
+    static NavLinkItem AboutLink = new("About", "/about", "info-circle");
 
-    private void ToggleNavMenu()
+    NavLinkItem[] NavLinksAuthorized = new[]
     {
-        collapseNavMenu = !collapseNavMenu;
-    }
+        HomeLink, 
+        BookmarksLink,
+        NewPostLink, 
+        SettingsLink, 
+        AboutLink
+    };
+
+    NavLinkItem[] NavLinksUnauthorized = new[]
+    {
+        LoginLink, 
+        BookmarksLink with { IsDisabled = true },
+        NewPostLink with { IsDisabled = true }, 
+        SettingsLink with { IsDisabled = true }, 
+        AboutLink
+    };
+
+    RenderFragment<NavLinkItem> DisplayNavLink = navLink => __builder =>
+    {
+        <RippleButton TagType="a" class="@GetClass(rippleBtnClass, navLink.IsDisabled)">
+            <NavLink href="@navLink.Route" Match="@navLink.Match" ActiveClass="@activeClass" class="@GetClass(navLinkClass, navLink.IsDisabled)">
+                <BootstrapIcon Name="@navLink.Icon" Size="1.5rem" />
+                <small class="@labelClass">@navLink.Label</small>
+            </NavLink>
+        </RippleButton>
+    };
+
+    static string GetClass(string baseClass, bool isDisabled) 
+        => isDisabled ? $"{baseClass} disabled" : baseClass;
+
+    record NavLinkItem(
+        string Label,
+        string Route,
+        string Icon,
+        NavLinkMatch Match = NavLinkMatch.Prefix,
+        bool IsDisabled = false);
 }

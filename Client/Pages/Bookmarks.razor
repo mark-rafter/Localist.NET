@@ -1,0 +1,42 @@
+@page "/bookmarks"
+@page "/bookmarks/{CurrentPage:int}"
+
+@attribute [Microsoft.AspNetCore.Authorization.Authorize]
+@inherits BookmarksBase
+
+<section id="filter"></section>
+
+@if (PostResults is not null)
+{
+    @if (PostResults.Any())
+    {
+        <BrowserNotificationsButton HideIfSubscribed="true" />
+        <section id="posts">
+            <Virtualize Context="postResult" Items="@PostResults" OverscanCount="5">
+                <PostCard Post="@postResult.Post" 
+                    ReplyCount="@postResult.ReplyCount" 
+                    IsBookmarked="@postResult.IsBookmarked"
+                    IsWatched="@postResult.IsWatched" />
+            </Virtualize>
+        </section>
+        <section id="pagination">
+            <Paginator CurrentPage="@CurrentPage" TotalPages="@TotalPages" Url="Post/bookmarks" />
+        </section>
+    }
+    else
+    {
+        <h4 class="text-center pt-4">
+            <em>No bookmarks yet</em>
+        </h4>
+    }
+}
+else if (Error is not null)
+{
+    <div class="alert alert-danger" role="alert">
+        @Error
+    </div>
+}
+else
+{
+    <Loading Message="Loading bookmarks..." />
+}

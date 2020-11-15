@@ -1,0 +1,42 @@
+@using Microsoft.JSInterop
+
+@inject IJSInProcessRuntime JSInProcessRuntime
+
+@if (TagType == "a")
+{
+    <a @ref="ButtonRef" @attributes="InputAttributes">
+        @ChildContent
+        <span class="ripple"></span>
+    </a>
+}
+else
+{
+    <button @ref="ButtonRef" @attributes="InputAttributes">
+        @ChildContent
+        <span class="ripple"></span>
+    </button>
+}
+
+@code {
+    [Parameter]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> InputAttributes { get; set; } = default!;
+
+    [Parameter]
+    public string TagType { get; init; } = "button";
+
+    ElementReference ButtonRef { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            JSInProcessRuntime.Invoke<ElementReference>("blazorAnimations.addRippleToButton", ButtonRef);
+        }
+    }
+
+    // component does not require re-rendering on parameter changes
+    protected override bool ShouldRender() => false;
+}

@@ -1,0 +1,49 @@
+@using Blazored.Modal
+
+@if (ImageUrls.Length > 1)
+{
+    <div id="imageCarousel" class="carousel carousel-dark slide carousel-fade" data-ride="carousel">
+        <ol class="carousel-indicators">
+            @for (var i = 0; i < ImageUrls.Length; i++)
+            {
+                <li data-target="#imageCarousel" data-slide-to="@i" class="@(Index == i ? "active" : "")"></li>
+            }
+        </ol>
+        <div class="carousel-inner">
+            @for (var i = 0; i < ImageUrls.Length; i++)
+            {
+                <div class="@(Index == i ? "carousel-item active" : "carousel-item")">
+                    <img class="d-block w-100" src="@ImageUrls[i]">
+                </div>
+            }
+        </div>
+        <a class="carousel-control-prev" href="#imageCarousel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#imageCarousel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </a>
+    </div>
+}
+else
+{
+    <div>
+        <img class="d-block w-100" src="@ImageUrls[0]">
+    </div>
+}
+<div class="m-2">
+    <button @onclick="BlazoredModal.Cancel" class="btn btn-block btn-secondary btn-sm">Close</button>
+</div>
+
+@code {
+    [CascadingParameter]
+    BlazoredModalInstance BlazoredModal { get; init; } = default!;
+
+    [Parameter]
+    public string[] ImageUrls { get; init; } = default!;
+
+    [Parameter]
+    public int Index { get; init; }
+}
