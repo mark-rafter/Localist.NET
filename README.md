@@ -10,7 +10,9 @@
 Localist is a message board [web app](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps) written in Blazor and ASP.NET Core 5
 
 ## Demo
-https://localistapp.herokuapp.com
+https://localistapp.herokuapp.com 
+
+log in with: guest / guestGU357
 
 ## Pre-requisites
 * [.NET 5](https://dotnet.microsoft.com/download/dotnet/5.0)

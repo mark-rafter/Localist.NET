@@ -5,14 +5,13 @@ Enum PostType {
 
 Table Post {
   Id varchar(24) [pk]
+
   Title varchar(50) [not null]
   Author Author
   Type PostType [not null]
   ExchangeDetails ExchangeDetails
   ThumbUrl varchar(500)
-
-  CreatedOn timestamp [default: `utcnow()`]
-  ModifiedOn timestamp
+  IsArchived boolean
 }
 
 Table PostReply {
@@ -22,28 +21,19 @@ Table PostReply {
   
   Message varchar(5000) [not null]
   Author Author
-  
-  CreatedOn timestamp [default: `utcnow()`]
-  ModifiedOn timestamp
 }
 
 Table PostDetail {
   Id varchar(24) [pk]
   PostId varchar(24) [ref: - Post.Id, not null]
-  Title varchar(50) [not null]
-  Author Author
-  Type PostType [not null]
-  ExchangeDetails ExchangeDetails
-  ThumbUrl varchar(500)
+
   Description varchar(5000)
   ImageUploadApiData ImageUploadApiData[]
-  
-  CreatedOn timestamp [default: `utcnow()`]
-  ModifiedOn timestamp
 }
 
 Table Users {
   Id varchar(24) [pk]
+
   UserName varchar(50)
   InviteCode varchar(100)
 }
@@ -51,7 +41,15 @@ Table Users {
 Table Profile {
   Id varchar(24) [pk]
   UserId varchar(24) [ref: - Users.Id]
+  
   BookmarkIds string[]
   WatchIds string[]
   NotificationSubscriptions NotificationSubscription[]
+}
+
+Table Invite {
+  Id varchar(24) [pk]
+
+  Code varchar(100) [ref: - Users.InviteCode]
+  Username varchar(50) [ref: - Users.UserName]
 }
