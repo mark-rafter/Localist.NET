@@ -22,7 +22,7 @@ namespace Localist.Client.Components
         public void AppendReply(PostReply reply)
         {
             var replyTreeItem = new TreeItem<PostReply>(reply, new());
-            PostReplyTree.Children.Add(replyTreeItem);
+            PostReplyTree.Children.Insert(0, replyTreeItem);
             ToggleReplyForm(false);
         }
     }

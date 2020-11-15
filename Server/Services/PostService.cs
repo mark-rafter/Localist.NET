@@ -148,7 +148,10 @@ namespace Localist.Server.Services
         public async Task<IReadOnlyList<TreeItem<PostReply>>> GetReplyTrees(string postId)
         {
             // build dictionary with empty children
-            var postRepliesDict = (await dbContext.PostReplies.Find(r => r.PostId == postId).ToListAsync())
+            var postRepliesDict = (await dbContext.PostReplies
+                    .Find(r => r.PostId == postId)
+                    .SortByDescending(r => r.Id)
+                    .ToListAsync())
                 .Select(reply => new
                 {
                     reply.ParentId,
