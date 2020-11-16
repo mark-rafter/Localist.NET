@@ -7,124 +7,124 @@
 
 @if (!IsSubmitting && Error is not null)
 {
-	 <div class="alert alert-danger" role="alert">
-	  @Error
-	 </div>
+	<div class="alert alert-danger" role="alert">
+		@Error
+	</div>
 }
 
 <section id="new-post" class="mx-auto mt-3" style="max-width: 40rem;">
- <h2>New Post</h2>
- <EditForm EditContext="@EditContext" OnValidSubmit="@(HandleValidSubmitAsync)">
-  <DataAnnotationsValidator />
+	<h2>New Post</h2>
+	<EditForm EditContext="@EditContext" OnValidSubmit="@(HandleValidSubmitAsync)">
+		<DataAnnotationsValidator />
 
-  <div class="mb-3">
-   <InputRadioGroup @bind-Value="NewPostModel.Type">
-	<label class="form-label mr-2">Post type:</label>
-	@foreach (var postType in PostTypes)
+		<div class="mb-3">
+			<InputRadioGroup @bind-Value="NewPostModel.Type">
+				<label class="form-label mr-2">Post type:</label>
+				@foreach (var postType in PostTypes)
 				{
-		 <InputRadio id="@postType" class="btn-check" Value="postType" />
-		 <label class="btn btn-outline-info" for="@postType">@postType</label>
+					<InputRadio id="@postType" class="btn-check" Value="postType" />
+					<label class="btn btn-outline-info" for="@postType">@postType</label>
 				}
-   </InputRadioGroup>
-  </div>
+			</InputRadioGroup>
+		</div>
 
-  @if (NewPostModel.Type == PostType.Exchange)
+		@if (NewPostModel.Type == PostType.Exchange)
 		{
-	   <div class="mb-3">
-		<label for="exchangetype" class="form-label">I want to:</label>
-		<InputSelect id="exchangetype" class="form-select" @bind-Value="NewPostModel.ExchangeType">
-		 @foreach (var exchangeType in Enum.GetValues(typeof(ExchangeType)))
+			<div class="mb-3">
+				<label for="exchangetype" class="form-label">I want to:</label>
+				<InputSelect id="exchangetype" class="form-select" @bind-Value="NewPostModel.ExchangeType">
+					@foreach (var exchangeType in Enum.GetValues(typeof(ExchangeType)))
 					{
-			  <option>@exchangeType</option>
+						<option>@exchangeType</option>
 					}
-		</InputSelect>
-	   </div>
+				</InputSelect>
+			</div>
 		}
 
-  <ValidationMessage For="@(() => NewPostModel.Title)" />
-  <div class="form-label-group">
-	  <InputText id="title" class="form-control" placeholder="Title" 
-	   onfocus="this.scrollIntoView()" @bind-Value="NewPostModel.Title" autofocus />
-   <label for="title">Title</label>
-  </div>
-
-  @if (NewPostModel.Type == PostType.Exchange)
-		{
-	   <div class="mb-3">
-		<label class="form-label">For:</label>
-		<div class="input-group">
-		 <span class="input-group-text">£</span>
-		   <InputNumber aria-label="Price" class="form-control" step="0.50" min="0" 
-			onfocus="this.scrollIntoView()" @bind-Value="NewPostModel.Price" />
-			 <InputText aria-label="Unit" class="form-control" placeholder="each" 
-			 list="defaultUnits" onfocus="this.scrollIntoView()" @bind-Value="NewPostModel.Unit" />
-		 <datalist id="defaultUnits">
-		  <option value="each" />
-		  <option value="pcm" />
-		  <option value="per day" />
-		  <option value="per hour" />
-		  <option value="per year" />
-		  <option value="per kg" />
-		 </datalist>
+		<ValidationMessage For="@(() => NewPostModel.Title)" />
+		<div class="form-label-group">
+	   		<InputText id="title" class="form-control" placeholder="Title" 
+	   			onfocus="this.scrollIntoView()" @bind-Value="NewPostModel.Title" autofocus />
+			<label for="title">Title</label>
 		</div>
-	   </div>
+
+		@if (NewPostModel.Type == PostType.Exchange)
+		{
+			<div class="mb-3">
+				<label class="form-label">For:</label>
+				<div class="input-group">
+					<span class="input-group-text">£</span>
+			 			<InputNumber aria-label="Price" class="form-control" step="0.50" min="0" 
+						 	onfocus="this.scrollIntoView()" @bind-Value="NewPostModel.Price" />
+		   				<InputText aria-label="Unit" class="form-control" placeholder="each" 
+						   list="defaultUnits" onfocus="this.scrollIntoView()" @bind-Value="NewPostModel.Unit" />
+					<datalist id="defaultUnits">
+						<option value="each" />
+						<option value="pcm" />
+						<option value="per day" />
+						<option value="per hour" />
+						<option value="per year" />
+						<option value="per kg" />
+					</datalist>
+				</div>
+			</div>
 		}
 
-  <ValidationMessage For="@(() => NewPostModel.Description)" />
-  <div class="form-label-group">
-	<InputTextArea id="description" class="form-control" row="4" placeholder="Description (optional)"
-	  onfocus="this.scrollIntoView()" @bind-Value="NewPostModel.Description" />
-   <label for="description">Description</label>
-  </div>
-
-  <div class="form-file mb-3">
-   <InputFile id="files" class="form-file-input" OnChange="@OnInputFileChange" disabled="@IsUploading" multiple />
-   <label class="form-file-label" for="files">
-	<span class="form-file-text font-italic">Upload images...</span>
-	<span class="form-file-button px-2">Browse</span>
-   </label>
-  </div>
-
-  @if (IsUploading)
-		{
-	   <div class="progress">
-		<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
-		 aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+		<ValidationMessage For="@(() => NewPostModel.Description)" />
+		<div class="form-label-group">
+	 		<InputTextArea id="description" class="form-control" row="4" placeholder="Description (optional)"
+	  			onfocus="this.scrollIntoView()" @bind-Value="NewPostModel.Description" />
+			<label for="description">Description</label>
 		</div>
-	   </div>
+
+		<div class="form-file mb-3">
+			<InputFile id="files" class="form-file-input" OnChange="@OnInputFileChange" disabled="@IsUploading" multiple />
+			<label class="form-file-label" for="files">
+				<span class="form-file-text font-italic">Upload images...</span>
+				<span class="form-file-button px-2">Browse</span>
+			</label>
+		</div>
+
+		@if (IsUploading)
+		{
+			<div class="progress">
+				<div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
+					aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+				</div>
+			</div>
 		}
 
-  <ValidationMessage For="@(() => NewPostModel.Base64Images)" />
-  @if (NewPostModel.Base64Images.Count > 0)
+		<ValidationMessage For="@(() => NewPostModel.Base64Images)" />
+		@if (NewPostModel.Base64Images.Count > 0)
 		{
-	   <h4>Images</h4>
-	   <div class="card mb-3" style="width:30rem;">
-		<div class="card-body">
-		 @foreach (var base64Image in NewPostModel.Base64Images)
+			<h4>Images</h4>
+			<div class="card mb-3" style="width:30rem;">
+				<div class="card-body">
+					@foreach (var base64Image in NewPostModel.Base64Images)
 					{
-			  <img class="rounded m-1 img-thumb" src="@($"data:image/jpeg;base64,{base64Image}")" />
+						<img class="rounded m-1 img-thumb" src="@($"data:image/jpeg;base64,{base64Image}")" />
 					}
+				</div>
+			</div>
+		}
+
+		<div class="form-check form-switch mb-3">
+			<InputCheckbox id="anonymous" class="form-check-input" @bind-Value="NewPostModel.IsAnonymous" />
+			<label class="form-check-label" for="anonymous">Post anonymously</label>
 		</div>
-	   </div>
-		}
 
-  <div class="form-check form-switch mb-3">
-   <InputCheckbox id="anonymous" class="form-check-input" @bind-Value="NewPostModel.IsAnonymous" />
-   <label class="form-check-label" for="anonymous">Post anonymously</label>
-  </div>
+		<div class="form-check form-switch mb-3">
+			<InputCheckbox id="notify" class="form-check-input" @bind-Value="NewPostModel.EnableNotifications" />
+			<label class="form-check-label" for="notify">Notify me about replies</label>
+		</div>
 
-  <div class="form-check form-switch mb-3">
-   <InputCheckbox id="notify" class="form-check-input" @bind-Value="NewPostModel.EnableNotifications" />
-   <label class="form-check-label" for="notify">Notify me about replies</label>
-  </div>
-
-  @if (NewPostModel.EnableNotifications)
+		@if (NewPostModel.EnableNotifications)
 		{
-	   <BrowserNotificationsButton HideIfSubscribed="true" />
+			<BrowserNotificationsButton HideIfSubscribed="true" />
 		}
 
-  <RippleButton type="submit" class="btn btn-primary mb-3" disabled="@IsSubmitting">
-   Submit
-  </RippleButton>
- </EditForm>
+		<RippleButton type="submit" class="btn btn-primary mb-3" disabled="@IsSubmitting">
+			Submit
+		</RippleButton>
+	</EditForm>
 </section>
