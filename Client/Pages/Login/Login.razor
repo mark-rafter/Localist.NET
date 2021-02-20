@@ -5,9 +5,9 @@
 
 @if (!IsSubmitting && Error is not null)
 {
-        <div class="alert alert-danger" role="alert">
-            @Error
-        </div>
+    <div class="alert alert-danger" role="alert">
+        @Error
+    </div>
 }
 
 <EditForm Model="@LoginModel" OnValidSubmit="@(HandleValidSubmitAsync)">
